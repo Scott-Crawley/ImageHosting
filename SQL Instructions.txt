@@ -1,0 +1,12 @@
+CREATE TABLE members(member_id integer primary key autoincrement, name text, member_since date, books_read integer DEFAULT 0, skill_level integer DEFAULT 1, reputation integer DEFAULT 0, api_token varchar NULL, private boolean DEFAULT false, address integer references address(address_id), club_id integer references clubs(club_id), interest1 text references categories(cat_name), interest2 text references categories(cat_name), interest3 text references categories(cat_name), weakness1 text references categories(cat_name), weakness2 text references categories(cat_name), weakness3 text references categories(cat_name));
+CREATE TABLE categories(cat_name text primary key);
+CREATE TABLE media_set(set_id text primary key NOT NULL, module text NULL);
+CREATE TABLE admins(admin_id integer primary key autoincrement, name text, phone varchar, address integer references address(address_id));
+CREATE TABLE librarians(librarian_id integer primary key autoincrement, name text, phone varchar, working boolean, address integer references address(address_id));
+CREATE TABLE loans(loan_id integer primary key autoincrement, issue_date date not null, due_date date not null, copy_id integer references media_copy(copy_id), member_id integer references members(member_id), issuer_id integer references librarians(librarian_id));
+CREATE TABLE bookings(booking_id integer primary key autoincrement, date_booked date not null, start date not null, end date not null, utility_id integer references utilities(utility_id), member_id integer references members(member_id), issuer_id integer references librarians(librarian_id));
+CREATE TABLE address(address_id integer primary key autoincrement, state text null, city text not null, road text not null, postcode varchar);
+CREATE TABLE media(media_id integer primary key autoincrement, title text NOT NULL, author text NOT NULL, isbn text NULL, barcode number, edition text, release_date DATE NOT NULL, stock integer NOT NULL, type text, confidential boolean DEFAULT false, category text references categories(cat_name), set_id integer NULL REFERENCES media_set(set_id));
+CREATE TABLE media_copy(copy_id integer primary key autoincrement, media_id integer REFERENCES media(media_id));
+CREATE TABLE clubs(club_id integer primary key autoincrement, name text, description text, leader_id integer references members(member_id));
+CREATE TABLE utilities(utility_id integer primary key autoincrement, type text, max_persons integer, available integer, price double, last_booked_id integer references members(member_id));
